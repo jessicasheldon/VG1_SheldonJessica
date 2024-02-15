@@ -65,6 +65,32 @@ namespace Platformer
                 }
             }
 
+            
+
+        }
+
+        void OnCollisionStay2D(Collision2D other)
+        {
+            // Check that we collide with ground
+            if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                // Check what is directly below the character's feet
+                RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, 0.7f);
+                Debug.DrawRay(transform.position, Vector2.down * 0.7f);
+
+                // We might have multiple things below our character's feet
+                for (int i = 0; i < hits.Length; i++)
+                {
+                    RaycastHit2D hit = hits[i];
+
+                    // Check that we collided with ground below our feet
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                    {
+                        // Reset jump count
+                        jumpsLeft = 2;
+                    }
+                }
+            }
         }
     }
 }
