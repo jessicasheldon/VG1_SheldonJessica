@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace Platformer
 {
     public class PlayerController : MonoBehaviour
     {
+
+        public static PlayerController instance;
 
         // Outlet
         Rigidbody2D _rigidbody2D;
@@ -13,16 +16,25 @@ namespace Platformer
         public GameObject projectilePrefab;
         SpriteRenderer sprite;
         Animator animator;
+        public TMP_Text scoreUI;
 
         // State tracking
         public int jumpsLeft;
+        public int score;
+        public bool isPaused;
 
         // Methods
+        void Awake()
+        {
+            instance = this;
+        }
         void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             sprite = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
+
+            score = PlayerPrefs.GetInt("Score");
         }
 
         void FixedUpdate()
@@ -43,6 +55,18 @@ namespace Platformer
         // Update is called once per frame
         void Update()
         {
+            // Update UI
+            scoreUI.text = score.ToString();
+
+            if (isPaused)
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                MenuController.instance.Show();
+            }
 
             // Move player left
             if (Input.GetKey(KeyCode.A))
@@ -112,6 +136,12 @@ namespace Platformer
                     }
                 }
             }
+        }
+
+        public void ResetScore()
+        {
+            score = 0;
+            PlayerPrefs.DeleteKey("Score");
         }
     }
 }
