@@ -8,6 +8,7 @@ namespace Adventure
     {
         // Outlets
         Rigidbody2D _rigidbody;
+        Animator _animator;
 
         // Configuration
         public KeyCode keyUp;
@@ -20,6 +21,7 @@ namespace Adventure
         void Start()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
+            _animator = GetComponent<Animator>();
         }
 
         void FixedUpdate()
@@ -39,6 +41,23 @@ namespace Adventure
             if (Input.GetKey(keyRight))
             {
                 _rigidbody.AddForce(Vector2.right * moveSpeed * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            }
+        }
+
+        void Update()
+        {
+            float movementSpeed = _rigidbody.velocity.sqrMagnitude;
+            _animator.SetFloat("speed", movementSpeed);
+
+            if(movementSpeed > 0.1f)
+            {
+                _animator.SetFloat("movementX", _rigidbody.velocity.x);
+                _animator.SetFloat("movementY", _rigidbody.velocity.y);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _animator.SetTrigger("attack");
             }
         }
     }
